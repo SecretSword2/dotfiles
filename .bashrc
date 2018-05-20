@@ -3,6 +3,11 @@
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
+# Source local definitions
+if [ -f /~/.bash_local ]; then
+    . .bash_local
+fi
+
 umask 022
 ulimit -c 0
 
@@ -13,62 +18,51 @@ if [ "x$COLORTERM" != "x" ]; then
     unset COLORTERM
 fi
 if [ "TERM" != "screen" ]; then
-    TERM=xterm
+    TERM=xterm-256color
 fi
 
-# If running interactively, then:
-if [ "$PS1" ]; then
-    set -o ignoreeof
-    set -o notify
-    set -o noclobber
-    set -o posix
+# If not runnig interactively, don't do anything
+[[ $- != *i* ]] && return
 
-    FIGNORE='.c~:.h~:.tex~:.ps~:.sty~:.aux:.lot:.lof:.toc'
+[[ $DISPLAY ]] && shopt -s checkwinsize
 
-    if [ ! "$LOGIN_SHELL" ]; then
-	export PS1='\[$(if [ $? -eq 0 ]; then echo -en \e[1\;32m ; else echo -en \e[1\;31m; fi;)\]\u@\H\e[m > \e[1;34m\w\e[m \n\$ '
-    fi
+set -o notify
+set -o noclobber
+set -o posix
+shopt -s autocd
+shopt -s cdspell
+shopt -s checkhash
+shopt -s cmdhist
+shopt -s direxpand
+shopt -s dirspell
+shopt -s globstar
+shopt -s histappend
 
-    HISTCONTROL=ignoreboth:erasedups
-    HISTSIZE=-1
-    HISTFILESIZE=-1
-    MAILCHECK=60
-fi
+FIGNORE='.c~:.h~:.tex~:.ps~:.sty~:.aux:.lot:.lof:.toc'
 
-# User specific aliases and functions
+PS1='[\u@\h \W]\$ '
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+HISTCONTROL=ignoreboth:erasedups
+HISTSIZE=-1
+HISTFILESIZE=-1
+MAILCHECK=60
 
-## Aliases
-### Prompt interactive mv, cp, rm
 alias mv='mv -i'
 alias cp='cp -i'
 alias rm='rm -i'
-
-### Change ls accordin to kernel
 if [ `uname` = "Darwin" ]; then
     alias ls='ls -G'
 elif [ `uname` = "Linux" ]; then
     alias ls='ls --color=auto'
 fi
 
-## Un-coque emacs oh
-export EDITOR=emacs
+EDITOR=emacs
 alias emacs='emacsclient --alternate-editor= --tty'
 
-## Advanced shell options
-shopt -s autocd
-shopt -s cdspell
-shopt -s globstar
-shopt -s histappend
-export LANG=en_US.utf8
-export TERM=xterm-256color
-
-## For local based configure files
-if [ -f .bash_local ]; then
-    source .bash_local
+if [[ $LANG = '' ]]; then
+    LANG=en_US.utf8
 fi
 
 ### Use clang
-export CC=/usr/bin/clang
-export CXX=/usr/bin/clang++
+CC=/usr/bin/clang
+CXX=/usr/bin/clang++
