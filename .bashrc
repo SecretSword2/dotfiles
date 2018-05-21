@@ -47,13 +47,15 @@ elif [ `uname` = "Linux" ]; then
     alias ls='ls --color=auto'
 fi
 
-EDITOR=emacs
-alias emacs='emacsclient --alternate-editor= --tty'
+EDITOR='emacsclient --alternate-editor= --tty'
+alias emacs="$EDITOR"
 
 if [[ $LANG = '' ]]; then
     LANG=en_US.utf8
 fi
 
-### Use clang
 CC=/usr/bin/clang
 CXX=/usr/bin/clang++
+
+BROWSER=/usr/bin/firefox
+
