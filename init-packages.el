@@ -12,10 +12,12 @@
 (setq package-list
       '(cyberpunk-theme
 	auto-complete
-	helm
 	flycheck
 	undo-tree
-        ))
+	anzu
+	smartparens
+	))
+
 
 ; activate all the packages
 (package-initialize)
