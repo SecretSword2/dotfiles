@@ -49,3 +49,5 @@
 (add-hook 'prog-mode-hook #'smartparens-mode)
 
 (show-paren-mode 1)
+
+(setq ispell-program-name "aspell")
