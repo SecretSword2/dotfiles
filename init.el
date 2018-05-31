@@ -33,9 +33,8 @@
 ;; Disable welocme screen
 (setq inhibit-startup-screen t)
 ;; Set tab width
-(setq indent-tabs-mode t)
-(setq tab-width 2)
 (setq-default tab-width 2)
+(setq-default indent-tabs-mode t)
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'cperl-indent-level 'tab-width)
 ;; Autocomplete
@@ -53,6 +52,8 @@
 
 (require 'magit)
 
+(setq ispell-program-name "aspell")
+
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -62,9 +63,10 @@
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+
 (defun my-web-mode-hook ()
   "Hooks for Web mode."
-(setq web-mode-markup-indent-offset 2)
-(web-mode-use-tabs)
+  (setq web-mode-markup-indent-offset 2)
+  (web-mode-use-tabs)
 )
 (add-hook 'web-mode-hook  'my-web-mode-hook)
