@@ -16,6 +16,7 @@
 	undo-tree
 	anzu
 	smartparens
+	web-mode
 	))
 
 
