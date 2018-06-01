@@ -47,8 +47,10 @@ elif [ `uname` = "Linux" ]; then
     alias ls='ls --color=auto'
 fi
 
-EDITOR='emacsclient --alternate-editor= --tty'
+# EDITOR='emacsclient --alternate-editor= --tty'
+EDITOR='emacsclient -a "" -nw'
 alias emacs="$EDITOR"
+
 
 if [[ $LANG = '' ]]; then
     LANG=en_US.utf8
