@@ -16,6 +16,7 @@
 	undo-tree
 	anzu
 	smartparens
+	magit
 	web-mode
 	))
 

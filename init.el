@@ -1,4 +1,3 @@
-
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
@@ -14,10 +13,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" default)))
+    ("9fe1540491fcf692b8c639a3abacd32b29233bc4cb834a12a0fd1e01cbd0a128" "57d7e8b7b7e0a22dc07357f0c30d18b33ffcbb7bcd9013ab2c9f70748cfa4838" default)))
  '(package-selected-packages
    (quote
-    (markdown-mode smartparens anzu undo-tree flycheck auto-complete cyberpunk-theme chess))))
+    (web-mode rainbow-delimiters smartparens anzu expand-region undo-tree flycheck markdown-mode cyberpunk-theme color-theme-modern auto-complete async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -50,6 +49,8 @@
 (add-hook 'prog-mode-hook #'smartparens-mode)
 
 (show-paren-mode 1)
+
+(require 'magit)
 
 (setq ispell-program-name "aspell")
 
