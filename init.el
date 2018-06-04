@@ -15,11 +15,11 @@
 
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+										(not (gnutls-available-p))))
+			 (proto (if no-ssl "http" "https")))
+	(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+	(when (< emacs-major-version 24)
+		(add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 
 (unless package-archive-contents
@@ -67,10 +67,13 @@
 	:bind
 	(("M-x" . helm-M-x)
 	 ("M-y" . helm-show-kill-ring)
-	 ("C-x C-f" . helm-find-files)))
+	 ("C-x C-f" . helm-find-files)
+	 ("C-x b" . helm-buffers-list)))
 
 (use-package web-mode
 	:mode (("\\.html?\\'" . web-mode))
 	:config
 	(setq web-mode-markup-indent-offset 2)
 	(web-mode-use-tabs))
+
+(use-package git)
