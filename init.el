@@ -76,4 +76,6 @@
 	(setq web-mode-markup-indent-offset 2)
 	(web-mode-use-tabs))
 
-(use-package git)
+(use-package magit
+	:ensure t)
+
