@@ -9,8 +9,6 @@
 
 ;; Show numbers
 (global-linum-mode t)
-;; Theme
-(load-theme 'cyberpunk)
 ;; Disable welocme screen
 (setq inhibit-startup-screen t)
 ;; Set tab width
@@ -24,8 +22,8 @@
 
 (use-package cyberpunk-theme
 	:ensure t
-	:config
-	(load-theme 'cyberpunk))
+	:init
+	(load-theme 'cyberpunk t))
 
 (use-package auto-complete
 	:ensure t
