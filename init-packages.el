@@ -10,16 +10,7 @@
 
 ; list the packages you want
 (setq package-list
-      '(cyberpunk-theme
-	auto-complete
-	flycheck
-	undo-tree
-	anzu
-	smartparens
-	magit
-	web-mode
-	))
-
+      '(use-package))
 
 ; activate all the packages
 (package-initialize)
