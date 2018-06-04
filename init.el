@@ -1,21 +1,28 @@
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
-
-(load "~/.emacs.d/init-packages")
 (setq custom-file (locate-user-emacs-file "custom.el"))
 
-;; Show numbers
 (global-linum-mode t)
-;; Disable welocme screen
+
 (setq inhibit-startup-screen t)
-;; Set tab width
+
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode t)
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'cperl-indent-level 'tab-width)
+
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+(package-initialize)
+
+(unless package-archive-contents
+	(package-refresh-contents))
+
+(when (not (package-installed-p 'use-package))
+  (package-install 'use-package))
 
 (eval-when-compile
 	(require 'use-package))
