@@ -9,6 +9,10 @@
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'cperl-indent-level 'tab-width)
 
+(show-paren-mode 1)
+
+(setq ispell-program-name "aspell")
+
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
@@ -47,17 +51,23 @@
 	(global-anzu-mode +1))
 
 (use-package undo-tree
+	:ensure t
 	:config
 	(global-undo-tree-mode))
 
 (use-package smartparens
+	:ensure t
 	:hook (prog-mode-hook . smartparens-mode))
 
-(show-paren-mode 1)
-
-;; (require 'magit)
-
-(setq ispell-program-name "aspell")
+(use-package helm
+	:ensure t
+	:config
+	(helm-mode 1)
+	(helm-autoresize-mode t)
+	:bind
+	(("M-x" . helm-M-x)
+	 ("M-y" . helm-show-kill-ring)
+	 ("C-x C-f" . helm-find-files)))
 
 (use-package web-mode
 	:mode (("\\.html?\\'" . web-mode))
