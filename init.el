@@ -79,3 +79,13 @@
 (use-package magit
 	:ensure t)
 
+(use-package markdown-mode
+	:ensure t)
+
+(use-package flyspell
+	:init
+	(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+	(add-hook 'text-mode-hook 'flyspell-mode)
+	(add-hook 'markdown-mode-hook 'flyspell-mode)
+	:commands
+	(flyspell-prog-mode flyspell-mode))
