@@ -89,3 +89,8 @@
 	(add-hook 'markdown-mode-hook 'flyspell-mode)
 	:commands
 	(flyspell-prog-mode flyspell-mode))
+
+(use-package mozc
+	:config
+	(setq defalt-input-method "japanese-mozc")
+	(setq mozc-candidate-style 'overlay))
