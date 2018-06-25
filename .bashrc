@@ -49,7 +49,7 @@ fi
 
 # EDITOR='emacsclient --alternate-editor= --tty'
 EDITOR='emacsclient -a "" -nw'
-alias emacs="$EDITOR"
+alias emacs="emacsclient -c"
 
 
 if [[ $LANG = '' ]]; then
