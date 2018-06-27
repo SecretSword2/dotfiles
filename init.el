@@ -18,7 +18,7 @@
 (set-keyboard-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 
-(set-face-attribute 'default nil :family "Ricty" :height 130)
+(set-face-attribute 'default nil :family "Source Han Code JP" :height 110)
 (set-language-environment "Japanese")
 
 (require 'package)
