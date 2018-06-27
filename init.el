@@ -13,6 +13,14 @@
 
 (setq ispell-program-name "aspell")
 
+(prefer-coding-system 'utf-8)
+(set-file-name-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+
+(set-face-attribute 'default nil :family "Ricty" :height 130)
+(set-language-environment "Japanese")
+
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
 										(not (gnutls-available-p))))
@@ -91,6 +99,7 @@
 	(flyspell-prog-mode flyspell-mode))
 
 (use-package mozc
-	:config
-	(setq defalt-input-method "japanese-mozc")
+	:ensure t
+	:init
+	(setq default-input-method "japanese-mozc")
 	(setq mozc-candidate-style 'overlay))
