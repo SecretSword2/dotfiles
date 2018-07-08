@@ -103,3 +103,9 @@
 	:init
 	(setq default-input-method "japanese-mozc")
 	(setq mozc-candidate-style 'overlay))
+
+(use-package auctex
+	:init
+	(add-hook 'LaTeX-mode-hook
+						(lambda ()
+							(setq indent-tabs-mode t))))
