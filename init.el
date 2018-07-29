@@ -1,4 +1,4 @@
-(setq custom-file (locate-user-emacs-file "custom.el"))
+(setq custom-file (locate-user-emacs-file "custom"))
 
 (global-linum-mode t)
 
@@ -31,16 +31,27 @@
 (eval-when-compile
 	(require 'use-package))
 
+(use-package ido
+	:init
+	(ido-mode 1)
+	(ido-everywhere 1)
+	(setq ido-enable-flex-matching t))
+
 (use-package cyberpunk-theme
 	:ensure t
 	:init
 	(load-theme 'cyberpunk t))
 
-(use-package auto-complete
+(use-package company
 	:ensure t
-	:config
-	(ac-config-default)
-	(add-to-list 'ac-modes 'tex-mode))
+	:init
+	(global-company-mode))
+;; (use-package auto-complete
+;; 	:ensure t
+;; 	:config
+;; 	(ac-config-default)
+;; 	(ac-flyspell-workaround)
+;; 	(add-to-list 'ac-modes 'tex-mode))
 
 (use-package flycheck
 	:ensure t)
@@ -59,16 +70,22 @@
 	:ensure t
 	:hook (prog-mode-hook . smartparens-mode))
 
-(use-package helm
-	:ensure t
-	:config
-	(helm-mode 1)
-	(helm-autoresize-mode t)
+;; (use-package helm
+;; 	:ensure t
+;; 	:config
+;; 	(helm-mode 1)
+;; 	(helm-autoresize-mode t)
+;; 	:bind
+;; 	(("M-x" . helm-M-x)
+;; 	 ("M-y" . helm-show-kill-ring)
+;; 	 ("C-x C-f" . helm-find-files)
+;; 	 ("C-x b" . helm-buffers-list)))
+
+(use-package smex
 	:bind
-	(("M-x" . helm-M-x)
-	 ("M-y" . helm-show-kill-ring)
-	 ("C-x C-f" . helm-find-files)
-	 ("C-x b" . helm-buffers-list)))
+	(("M-x" . smex)
+	 ("M-X" . smex-major-mode-commands)
+	 ("C-c C-c M-x" . execute-extended-command)))
 
 (use-package web-mode
 	:mode (("\\.html?\\'" . web-mode))
@@ -90,7 +107,7 @@
 	:commands
 	(flyspell-prog-mode flyspell-mode))
 
-(use-package mozc
-	:config
-	(setq defalt-input-method "japanese-mozc")
-	(setq mozc-candidate-style 'overlay))
+;; (use-package auctex
+;; 	:ensure t
+;; 	:init
+;; 	(add-hook 'LaTeX-mode-hook (lambda () (setq indent-tabs-mode t)))) 
