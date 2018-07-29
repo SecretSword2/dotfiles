@@ -13,6 +13,14 @@
 
 (setq ispell-program-name "aspell")
 
+(prefer-coding-system 'utf-8)
+(set-file-name-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+
+(set-face-attribute 'default nil :family "Source Han Code JP" :height 110)
+(set-language-environment "Japanese")
+
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
 										(not (gnutls-available-p))))
@@ -107,7 +115,8 @@
 	:commands
 	(flyspell-prog-mode flyspell-mode))
 
-;; (use-package auctex
-;; 	:ensure t
-;; 	:init
-;; 	(add-hook 'LaTeX-mode-hook (lambda () (setq indent-tabs-mode t)))) 
+ (use-package auctex
+	:init
+	(add-hook 'LaTeX-mode-hook
+						(lambda ()
+							(setq indent-tabs-mode t))))
