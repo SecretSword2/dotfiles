@@ -18,16 +18,26 @@
 (set-keyboard-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 
-(set-face-attribute 'default nil :family "Source Han Code JP" :height 110)
+(set-face-attribute 'default nil :family "M+ 1mn" :height 115)
 (set-language-environment "Japanese")
 
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-										(not (gnutls-available-p))))
-			 (proto (if no-ssl "http" "https")))
-	(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-	(when (< emacs-major-version 24)
-		(add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  (when no-ssl
+    (warn "\
+Your version of Emacs does not support SSL connections,
+which is unsafe because it allows man-in-the-middle attacks.
+There are two things you can do about this warning:
+1. Install an Emacs version that does support SSL and be safe.
+2. Remove this warning from your init file so you won't see it again."))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 
 (unless package-archive-contents
@@ -39,12 +49,6 @@
 (eval-when-compile
 	(require 'use-package))
 
-(use-package ido
-	:init
-	(ido-mode 1)
-	(ido-everywhere 1)
-	(setq ido-enable-flex-matching t))
-
 (use-package cyberpunk-theme
 	:ensure t
 	:init
@@ -54,12 +58,32 @@
 	:ensure t
 	:init
 	(global-company-mode))
-;; (use-package auto-complete
-;; 	:ensure t
-;; 	:config
-;; 	(ac-config-default)
-;; 	(ac-flyspell-workaround)
-;; 	(add-to-list 'ac-modes 'tex-mode))
+
+(use-package counsel
+	:ensure t
+	:init
+	(ivy-mode 1)
+	(counsel-mode 1)
+	:config
+	;; (global-set-key "\C-s" 'swiper)
+	(global-set-key (kbd "C-c C-r") 'ivy-resume)
+	(global-set-key (kbd "<f6>") 'ivy-resume)
+	(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+	(global-set-key (kbd "C-c g") 'counsel-git)
+	(global-set-key (kbd "C-c j") 'counsel-git-grep)
+	(global-set-key (kbd "C-c k") 'counsel-ag)
+	(global-set-key (kbd "C-x l") 'counsel-locate)
+	(global-set-key (kbd "C-S-o") 'counsel-rhythmbox))
+
+(use-package rainbow-delimiters
+	:ensure t
+	:init
+	(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+	:config
+	(set-face-attribute 'rainbow-delimiters-unmatched-face nil
+											:foreground 'unspecified
+											:inherit 'error
+											:strike-through t))
 
 (use-package flycheck
 	:ensure t)
@@ -78,24 +102,8 @@
 	:ensure t
 	:hook (prog-mode-hook . smartparens-mode))
 
-;; (use-package helm
-;; 	:ensure t
-;; 	:config
-;; 	(helm-mode 1)
-;; 	(helm-autoresize-mode t)
-;; 	:bind
-;; 	(("M-x" . helm-M-x)
-;; 	 ("M-y" . helm-show-kill-ring)
-;; 	 ("C-x C-f" . helm-find-files)
-;; 	 ("C-x b" . helm-buffers-list)))
-
-(use-package smex
-	:bind
-	(("M-x" . smex)
-	 ("M-X" . smex-major-mode-commands)
-	 ("C-c C-c M-x" . execute-extended-command)))
-
 (use-package web-mode
+	:ensure t
 	:mode (("\\.html?\\'" . web-mode))
 	:config
 	(setq web-mode-markup-indent-offset 2)
@@ -114,9 +122,3 @@
 	(add-hook 'markdown-mode-hook 'flyspell-mode)
 	:commands
 	(flyspell-prog-mode flyspell-mode))
-
- (use-package auctex
-	:init
-	(add-hook 'LaTeX-mode-hook
-						(lambda ()
-							(setq indent-tabs-mode t))))
