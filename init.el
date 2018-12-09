@@ -1,3 +1,7 @@
+;;; init.el --- Initialization file for Emacs
+;;; Commentary: Emacs Startup File --- initialization for Emacs
+;;; Code:
+
 (setq custom-file (locate-user-emacs-file "custom"))
 
 (global-linum-mode t)
@@ -20,6 +24,10 @@
 
 (set-face-attribute 'default nil :family "M+ 1mn" :height 115)
 (set-language-environment "Japanese")
+
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
 
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
@@ -54,6 +62,11 @@ There are two things you can do about this warning:
 	:init
 	(load-theme 'cyberpunk t))
 
+(use-package powerline
+	:ensure t
+	:init
+	(powerline-default-theme))
+
 (use-package company
 	:ensure t
 	:init
@@ -62,10 +75,10 @@ There are two things you can do about this warning:
 (use-package counsel
 	:ensure t
 	:init
-	(ivy-mode 1)
 	(counsel-mode 1)
+	(ivy-mode 1)
 	:config
-	;; (global-set-key "\C-s" 'swiper)
+	(global-set-key "\C-s" 'swiper)
 	(global-set-key (kbd "C-c C-r") 'ivy-resume)
 	(global-set-key (kbd "<f6>") 'ivy-resume)
 	(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
@@ -86,9 +99,22 @@ There are two things you can do about this warning:
 											:strike-through t))
 
 (use-package flycheck
-	:ensure t)
+	:ensure t
+	:init
+	(global-flycheck-mode))
+
+(use-package yasnippet
+	:ensure t
+	:init
+	(yas-global-mode 1))
+
+(use-package yasnippet-snippets
+	:ensure t
+	:requires yasnippet
+	:after yasnippet)
 
 (use-package anzu
+	:disabled
 	:ensure t
 	:config
 	(global-anzu-mode +1))
@@ -99,12 +125,13 @@ There are two things you can do about this warning:
 	(global-undo-tree-mode))
 
 (use-package smartparens
+	:disabled
 	:ensure t
-	:hook (prog-mode-hook . smartparens-mode))
+	:hook prog-mode)
 
 (use-package web-mode
 	:ensure t
-	:mode (("\\.html?\\'" . web-mode))
+	:mode ("\\.html?\\'" "\\.php\\'")
 	:config
 	(setq web-mode-markup-indent-offset 2)
 	(web-mode-use-tabs))
@@ -116,9 +143,10 @@ There are two things you can do about this warning:
 	:ensure t)
 
 (use-package flyspell
-	:init
-	(add-hook 'prog-mode-hook 'flyspell-prog-mode)
-	(add-hook 'text-mode-hook 'flyspell-mode)
-	(add-hook 'markdown-mode-hook 'flyspell-mode)
-	:commands
-	(flyspell-prog-mode flyspell-mode))
+	:ensure t
+	:hook (((text-mode markdown-mode) . flyspell-mode)
+				 (prog-mode . flyspell-prog-mode)))
+
+(provide 'init)
+
+;;; init.el ends here
