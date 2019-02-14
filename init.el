@@ -17,63 +17,79 @@
 
 (setq ispell-program-name "aspell")
 
+(set-face-attribute 'default nil :family "M+ 1mn" :height 115)
+(set-language-environment "Japanese")
+
 (prefer-coding-system 'utf-8)
 (set-file-name-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
 
-(set-face-attribute 'default nil :family "M+ 1mn" :height 115)
-(set-language-environment "Japanese")
-
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
-(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  (when no-ssl
-    (warn "\
-Your version of Emacs does not support SSL connections,
-which is unsafe because it allows man-in-the-middle attacks.
-There are two things you can do about this warning:
-1. Install an Emacs version that does support SSL and be safe.
-2. Remove this warning from your init file so you won't see it again."))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
-(package-initialize)
+;; straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(unless package-archive-contents
-	(package-refresh-contents))
-
-(when (not (package-installed-p 'use-package))
-  (package-install 'use-package))
-
-(eval-when-compile
-	(require 'use-package))
+(straight-use-package 'use-package)
 
 (use-package cyberpunk-theme
-	:ensure t
+	:straight t
 	:init
 	(load-theme 'cyberpunk t))
 
 (use-package powerline
-	:ensure t
+	:straight t
 	:init
 	(powerline-default-theme))
 
-(use-package company
-	:ensure t
+(use-package yasnippet
+	:straight t
 	:init
-	(global-company-mode))
+	(yas-global-mode 1))
+
+(use-package yasnippet-snippets
+	:straight t
+	:requires yasnippet
+	:after yasnippet)
+
+(use-package company
+	:requires yasnippet
+	:straight t
+	:init
+	(global-company-mode)
+	(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+	(defun company-mode/backend-with-yas (backend)
+		(if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+				backend
+			(append (if (consp backend) backend (list backend))
+							'(:with company-yasnippet))))
+	(defun set-yas-as-company-backend ()
+		(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
+	(add-hook 'company-mode-hook 'set-yas-as-company-backend)
+	:config
+	(setq company-show-numbers nil)
+	(setq company-transformers '(company-sort-by-backend-importance))
+	(setq company-idle-delay 0)
+	(setq company-minimum-prefix-length 2)
+	(setq company-selection-wrap-around t)
+	(setq company-dabbrev-downcase nil))
 
 (use-package counsel
-	:ensure t
+	:straight t
 	:init
 	(counsel-mode 1)
 	(ivy-mode 1)
@@ -89,7 +105,7 @@ There are two things you can do about this warning:
 	(global-set-key (kbd "C-S-o") 'counsel-rhythmbox))
 
 (use-package rainbow-delimiters
-	:ensure t
+	:straight t
 	:init
 	(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 	:config
@@ -99,54 +115,38 @@ There are two things you can do about this warning:
 											:strike-through t))
 
 (use-package flycheck
-	:ensure t
+	:straight t
 	:init
 	(global-flycheck-mode))
 
-(use-package yasnippet
-	:ensure t
-	:init
-	(yas-global-mode 1))
-
-(use-package yasnippet-snippets
-	:ensure t
-	:requires yasnippet
-	:after yasnippet)
-
-(use-package anzu
-	:disabled
-	:ensure t
-	:config
-	(global-anzu-mode +1))
-
 (use-package undo-tree
-	:ensure t
+	:straight t
 	:config
 	(global-undo-tree-mode))
 
-(use-package smartparens
-	:disabled
-	:ensure t
-	:hook prog-mode)
-
 (use-package web-mode
-	:ensure t
 	:mode ("\\.html?\\'" "\\.php\\'")
 	:config
 	(setq web-mode-markup-indent-offset 2)
 	(web-mode-use-tabs))
 
 (use-package magit
-	:ensure t)
+	:straight t)
 
 (use-package markdown-mode
-	:ensure t)
+	:straight t)
 
 (use-package flyspell
-	:ensure t
+	:straight t
 	:hook (((text-mode markdown-mode) . flyspell-mode)
 				 (prog-mode . flyspell-prog-mode)))
 
+(use-package groovy-mode
+	:straight t)
+
 (provide 'init)
 
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars)
+;; End:
 ;;; init.el ends here
