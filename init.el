@@ -1,4 +1,4 @@
-;;; init.el --- Initialization file for Emacs
+;; init.el --- Initialization file for Emacs
 ;;; Commentary: Emacs Startup File --- initialization for Emacs
 ;;; Code:
 
@@ -6,6 +6,7 @@
 
 (global-linum-mode t)
 
+(setq ring-bell-function 'ignore)
 (setq inhibit-startup-screen t)
 
 (setq-default tab-width 2)
@@ -50,10 +51,11 @@
 	:init
 	(load-theme 'cyberpunk t))
 
-(use-package powerline
+(use-package spaceline
 	:straight t
-	:init
-	(powerline-default-theme))
+	:config
+	(spaceline-emacs-theme)
+	(spaceline-helm-mode))
 
 (use-package yasnippet
 	:straight t
@@ -88,21 +90,37 @@
 	(setq company-selection-wrap-around t)
 	(setq company-dabbrev-downcase nil))
 
-(use-package counsel
+(use-package helm
 	:straight t
-	:init
-	(counsel-mode 1)
-	(ivy-mode 1)
+  :bind (("M-x" . helm-M-x)
+         ("C-x b" . helm-mini)
+         ("C-x C-f" . helm-find-files)
+         ("M-y"   . helm-show-kill-ring)
+         ("C-c m"   . helm-man-woman)
+         ("C-c o"   . helm-occur)
+         :map helm-map
+         ("C-h" . delete-backward-char)
+         :map helm-find-files-map
+         ("C-h" . delete-backward-char))
 	:config
-	(global-set-key "\C-s" 'swiper)
-	(global-set-key (kbd "C-c C-r") 'ivy-resume)
-	(global-set-key (kbd "<f6>") 'ivy-resume)
-	(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-	(global-set-key (kbd "C-c g") 'counsel-git)
-	(global-set-key (kbd "C-c j") 'counsel-git-grep)
-	(global-set-key (kbd "C-c k") 'counsel-ag)
-	(global-set-key (kbd "C-x l") 'counsel-locate)
-	(global-set-key (kbd "C-S-o") 'counsel-rhythmbox))
+	(helm-mode 1)
+	(helm-autoresize-mode t)
+	(setq helm-M-x-fuzzy-match t)
+	(setq helm-buffers-fuzzy-matching t)
+  (setq helm-recentf-fuzzy-match t))
+
+(use-package helm-swoop
+	:straight t
+	:requires helm
+	:config
+	(setq helm-swoop-use-fuzzy-match t))
+
+(use-package anzu
+	:straight t
+	:diminish anzu-minor-mode
+	:config
+	(global-anzu-mode +1)
+	(setq anzu-cons-mode-line-p nil))
 
 (use-package rainbow-delimiters
 	:straight t
