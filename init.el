@@ -1,10 +1,8 @@
-;; init.el --- Initialization file for Emacs
-;;; Commentary: Emacs Startup File --- initialization for Emacs
-;;; Code:
-
 (setq custom-file (locate-user-emacs-file "custom"))
 
-(global-linum-mode t)
+(if (<= emacs-major-version 26)
+		(global-display-line-numbers-mode)
+	(global-linum-mode t))
 
 (setq ring-bell-function 'ignore)
 (setq inhibit-startup-screen t)
@@ -16,18 +14,14 @@
 
 (show-paren-mode 1)
 
-(setq ispell-program-name "aspell")
+;; (setq ispell-program-name "docker.exe run --rm -it -v ${PWD}:/workdir hunspell")
 
 ;;(set-face-attribute 'default nil :family "M+ 1mn" :height 115)
-(set-face-attribute 'default nil :family "Monofur NF" :height 130)
-(set-fontset-font (frame-parameter nil 'font)
-									'japanese-jisx0208
-									(font-spec :family "BIZ UDGothic" :size 15))
-;; いろはにほへとちりぬるを
-;; Lorem ipsum sit amet
-;; (set-fontset-font "fontset-standard"
-;; 									'japanese-jisx0213.2004-1
-;; 									(font-spec :family "M+ 1mn") nil 'prepend)
+(set-face-attribute 'default nil :family "Ocami" :height 140)
+;; (set-fontset-font (frame-parameter nil 'font)
+;; 									'japanese-jisx0208
+;; 									(font-spec :family "BIZ UDGothic" :size 15)))
+
 (set-language-environment "Japanese")
 
 (prefer-coding-system 'utf-8)
@@ -56,24 +50,45 @@
 (straight-use-package 'use-package)
 
 ;; Themes
-(use-package cyberpunk-theme
-	:disabled
+(use-package dracula-theme
 	:straight t
 	:init
-	(load-theme 'cyberpunk t))
+	(load-theme 'dracula t))
 
-(use-package nord-theme
+(use-package all-the-icons
 	:straight t
-	:init
-	(load-theme 'nord t))
+  :custom
+  (all-the-icons-scale-factor 0.83))
 
-(use-package spaceline
+(use-package doom-modeline
+  :straight t
+	:init
+	(doom-modeline-mode 1))
+
+(use-package projectile
+	:straight t
+  :config
+  (defun projectile-project-find-function (dir)
+    (let* ((root (projectile-project-root dir)))
+      (and root (cons 'transient root))))
+  (with-eval-after-load 'project
+    (add-to-list 'project-find-functions 'projectile-project-find-function))
+  )
+
+(use-package eglot
 	:straight t
 	:config
-	(spaceline-emacs-theme)
-	(spaceline-helm-mode))
+	(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+	:bind
+	(:map eglot-mode-map
+				("C-c C-d" . eglot-help-at-point)
+				("C-c C-r" . eglot-code-actions))
+	:hook
+	((c-mode-common . eglot-ensure))
+	)
 
 (use-package yasnippet
+	:delight yas-minor-mode
 	:straight t
 	:init
 	(yas-global-mode 1))
@@ -85,7 +100,7 @@
 
 (use-package company
 	:straight t
-	:diminish
+	:delight company-mode
 	:init
 	(global-company-mode)
 	(defvar company-mode/enable-yas t
@@ -110,80 +125,45 @@
 	(company-dabbrev-downcase nil))
 
 (use-package company-box
-  :after company
 	:straight t
-  :diminish
-  :hook (company-mode . company-box-mode)
-	:init
-	(setq company-box-icons-unknown 'fa_question_circle)
-	
-	(setq company-box-icons-elisp
-   '((fa_tag :face font-lock-function-name-face) ;; Function
-     (fa_cog :face font-lock-variable-name-face) ;; Variable
-     (fa_cube :face font-lock-constant-face) ;; Feature
-     (md_color_lens :face font-lock-doc-face))) ;; Face
+  :after (company all-the-icons)
+  :hook ((company-mode . company-box-mode))
+  :config
+  (setq company-box-icons-alist 'company-box-icons-all-the-icons))
 
-(setq company-box-icons-yasnippet 'fa_bookmark)
+(use-package hydra
+	:straight t)
 
-(setq company-box-icons-lsp
-      '((1 . fa_text_height) ;; Text
-        (2 . (fa_tags :face font-lock-function-name-face)) ;; Method
-        (3 . (fa_tag :face font-lock-function-name-face)) ;; Function
-        (4 . (fa_tag :face font-lock-function-name-face)) ;; Constructor
-        (5 . (fa_cog :foreground "#FF9800")) ;; Field
-        (6 . (fa_cog :foreground "#FF9800")) ;; Variable
-        (7 . (fa_cube :foreground "#7C4DFF")) ;; Class
-        (8 . (fa_cube :foreground "#7C4DFF")) ;; Interface
-        (9 . (fa_cube :foreground "#7C4DFF")) ;; Module
-        (10 . (fa_cog :foreground "#FF9800")) ;; Property
-        (11 . md_settings_system_daydream) ;; Unit
-        (12 . (fa_cog :foreground "#FF9800")) ;; Value
-        (13 . (md_storage :face font-lock-type-face)) ;; Enum
-        (14 . (md_closed_caption :foreground "#009688")) ;; Keyword
-        (15 . md_closed_caption) ;; Snippet
-        (16 . (md_color_lens :face font-lock-doc-face)) ;; Color
-        (17 . fa_file_text_o) ;; File
-        (18 . md_refresh) ;; Reference
-        (19 . fa_folder_open) ;; Folder
-        (20 . (md_closed_caption :foreground "#009688")) ;; EnumMember
-        (21 . (fa_square :face font-lock-constant-face)) ;; Constant
-        (22 . (fa_cube :face font-lock-type-face)) ;; Struct
-        (23 . fa_calendar) ;; Event
-        (24 . fa_square_o) ;; Operator
-        (25 . fa_arrows)) ;; TypeParameter
-      ))
-
-(use-package helm
+(use-package counsel
 	:straight t
-  :bind (("M-x" . helm-M-x)
-         ("C-x b" . helm-mini)
-         ("C-x C-f" . helm-find-files)
-         ("M-y"   . helm-show-kill-ring)
-         ("C-c m"   . helm-man-woman)
-         ("C-c o"   . helm-occur)
-         :map helm-map
-         ("C-h" . delete-backward-char)
-         :map helm-find-files-map
-         ("C-h" . delete-backward-char))
 	:config
-	(helm-mode 1)
-	(helm-autoresize-mode t)
-	(setq helm-M-x-fuzzy-match t)
-	(setq helm-buffers-fuzzy-matching t)
-  (setq helm-recentf-fuzzy-match t))
+  (counsel-mode 1))
 
-(use-package helm-swoop
+(use-package ivy
 	:straight t
-	:requires helm
 	:config
-	(setq helm-swoop-use-fuzzy-match t))
+	(setq ivy-use-virtual-buffers t)
+	(setq enable-recursive-minibuffers t)
+	(setq ivy-use-selectable-prompt t)
+	(ivy-mode 1)
+	:bind
+	(("M-s M-s" . swiper)
+	 ("M-x" . counsel-M-x)
+	 ("M-y" . counsel-yank-pop)
+	 ("C-M-r" . counsel-recentf)
+	 ("C-x C-b" . counsel-ibuffer)
+	 ("C-M-f" . counsel-ag)))
+
+(use-package ivy-hydra
+	:straight t
+	:after (ivy hydra)
+	:requires (ivy hydra))
 
 (use-package anzu
 	:straight t
-	:diminish anzu-minor-mode
+	:diminish anzu-mode
 	:config
-	(global-anzu-mode +1)
-	(setq anzu-cons-mode-line-p nil))
+	(global-anzu-mode +1))
 
 (use-package rainbow-delimiters
 	:straight t
@@ -199,6 +179,11 @@
 	:straight t
 	:init
 	(global-flycheck-mode))
+
+(use-package flycheck-vale
+	:straight t
+	:init
+	(flycheck-vale-setup))
 
 (use-package undo-tree
 	:straight t
@@ -217,18 +202,7 @@
 (use-package markdown-mode
 	:straight t)
 
-(use-package flyspell
-	:straight t
-	:hook (((text-mode markdown-mode) . flyspell-mode)
-				 (prog-mode . flyspell-prog-mode)))
-
 (use-package groovy-mode
 	:straight t)
 
-
 (provide 'init)
-
-;; Local Variables:
-;; byte-compile-warnings: (not free-vars)
-;; End:
-;;; init.el ends here
