@@ -63,10 +63,10 @@
   :custom
   (all-the-icons-scale-factor 0.83))
 
-(use-package doom-modeline
-  :straight t
-	:init
-	(doom-modeline-mode 1))
+;; (use-package doom-modeline
+;;   :straight t
+;; 	:init
+;; 	(doom-modeline-mode 1))
 
 (use-package projectile
 	:straight t
@@ -78,16 +78,38 @@
     (add-to-list 'project-find-functions 'projectile-project-find-function))
   )
 
-(use-package eglot
+(use-package company
 	:straight t
+	:init
+	(use-package company-lsp
+		:straight t)
 	:config
-	(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
-	:bind
-	(:map eglot-mode-map
-				("C-c C-d" . eglot-help-at-point)
-				("C-c C-r" . eglot-code-actions))
+	(global-company-mode)
+	(company-tng-configure-default)
+	:custom
+  (company-idle-delay 0)
+  (company-minimum-prefix-length 3)
+	(company-selection-wrap-around t)
+	(company-dabbrev-downcase nil))
+
+(use-package lsp-mode
+	:straight t
+	:custom
+	(lsp-enable-indentation nil)
 	:hook
-	((c-mode-common . eglot-ensure))
+	(c++-mode . lsp))
+
+(use-package lsp-ui
+	:straight t
+	)
+
+(use-package google-c-style
+	:straight (google-c-style :type git :host github :repo "google/styleguide" :branch "gh-pages")
+	:hook
+	(c++-mode . google-set-c-style)
+	(c-mode-common-hook . google-set-c-style)
+	(c++-mode-common-hook . google-set-c-style)
+	(c-mode-common-hook . google-make-newline-indent)
 	)
 
 (use-package yasnippet
@@ -100,39 +122,6 @@
 	:straight t
 	:requires yasnippet
 	:after yasnippet)
-
-(use-package company
-	:straight t
-	:delight company-mode
-	:init
-	(global-company-mode)
-	(defvar company-mode/enable-yas t
-  "Enable yasnippet for all backends.")
-	(defun company-mode/backend-with-yas (backend)
-		(if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-				backend
-			(append (if (consp backend) backend (list backend))
-							'(:with company-yasnippet))))
-	(defun set-yas-as-company-backend ()
-		(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)))
-	(add-hook 'company-mode-hook 'set-yas-as-company-backend)
-	:custom
-	(company-begin-commands '(self-insert-command))
-  (company-idle-delay 0)
-  (company-minimum-prefix-length 2)
-  (company-show-numbers t)
-  (company-tooltip-align-annotations 't)
-  (global-company-mode t)
-	(company-transformers '(company-sort-by-backend-importance))
-	(company-selection-wrap-around t)
-	(company-dabbrev-downcase nil))
-
-(use-package company-box
-	:straight t
-  :after (company all-the-icons)
-  :hook ((company-mode . company-box-mode))
-  :config
-  (setq company-box-icons-alist 'company-box-icons-all-the-icons))
 
 (use-package hydra
 	:straight t)
@@ -198,9 +187,6 @@
 	:config
 	(setq web-mode-markup-indent-offset 2)
 	(web-mode-use-tabs))
-
-(use-package magit
-	:straight t)
 
 (use-package markdown-mode
 	:straight t)
