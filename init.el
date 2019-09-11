@@ -1,5 +1,8 @@
 (setq custom-file (locate-user-emacs-file "custom"))
 
+(setq gc-cons-threshold (eval-when-compile (* 1024 1024 1024)))
+(run-with-idle-timer 2 t (lambda () (garbage-collect)))
+
 (if (<= emacs-major-version 26)
 		(global-display-line-numbers-mode)
 	(global-linum-mode t))
