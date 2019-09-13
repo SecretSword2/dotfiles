@@ -82,7 +82,14 @@
 	:straight t
 	:init
 	(use-package company-lsp
-		:straight t)
+		:straight t
+		:config
+		(push 'company-lsp company-backends)
+		:custom
+		(company-lsp-async t)
+		(company-lsp-enable-snippet t)
+		(company-lsp-enable-recompletion t)
+		)
 	:config
 	(global-company-mode)
 	(company-tng-configure-default)
@@ -94,8 +101,6 @@
 
 (use-package lsp-mode
 	:straight t
-	:custom
-	(lsp-enable-indentation nil)
 	:hook
 	(c++-mode . lsp))
 
@@ -110,6 +115,12 @@
 	(c-mode-common-hook . google-set-c-style)
 	(c++-mode-common-hook . google-set-c-style)
 	(c-mode-common-hook . google-make-newline-indent)
+	)
+
+(use-package aggressive-indent
+	:straight t
+	:hook
+	(c++-mode . aggressive-indent-mode)
 	)
 
 (use-package yasnippet
