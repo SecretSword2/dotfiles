@@ -20,7 +20,7 @@
 ;; (setq ispell-program-name "docker.exe run --rm -it -v ${PWD}:/workdir hunspell")
 
 ;;(set-face-attribute 'default nil :family "M+ 1mn" :height 115)
-(set-face-attribute 'default nil :family "Ocami" :height 140)
+(set-face-attribute 'default nil :family "Ocami" :height (if (eq system-type 'darwin) 170 140))
 ;; (set-fontset-font (frame-parameter nil 'font)
 ;; 									'japanese-jisx0208
 ;; 									(font-spec :family "BIZ UDGothic" :size 15)))
@@ -94,8 +94,11 @@
 
 (use-package lsp-mode
 	:straight t
-	:custom
-	(lsp-enable-indentation nil)
+	:init (use-package exec-path-from-shell
+					:straight t
+					:config
+					(when (memq window-system '(mac ns x))
+						(exec-path-from-shell-initialize)))
 	:hook
 	(c++-mode . lsp))
 
@@ -110,6 +113,12 @@
 	(c-mode-common-hook . google-set-c-style)
 	(c++-mode-common-hook . google-set-c-style)
 	(c-mode-common-hook . google-make-newline-indent)
+	)
+
+(use-package aggressive-indent
+	:straight t
+	:hook
+	(c++-mode . aggressive-indent-mode)
 	)
 
 (use-package yasnippet
