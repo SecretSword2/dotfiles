@@ -101,6 +101,7 @@
 					(when (memq window-system '(mac ns x))
 						(exec-path-from-shell-initialize)))
 	:hook
+	(before-save . lsp-format-buffer)
 	(c++-mode . lsp))
 
 (use-package lsp-ui
