@@ -179,6 +179,7 @@
 											:strike-through t))
 
 (use-package flycheck
+	:if (< emacs-major-version 26)
 	:straight t
 	:init
 	(global-flycheck-mode))
