@@ -17,13 +17,7 @@
 
 (show-paren-mode 1)
 
-;; (setq ispell-program-name "docker.exe run --rm -it -v ${PWD}:/workdir hunspell")
-
-;;(set-face-attribute 'default nil :family "M+ 1mn" :height 115)
-(set-face-attribute 'default nil :family "Ocami" :height (if (eq system-type 'darwin) 170 140))
-;; (set-fontset-font (frame-parameter nil 'font)
-;; 									'japanese-jisx0208
-;; 									(font-spec :family "BIZ UDGothic" :size 15)))
+(set-face-attribute 'default nil :family "Cica" :height (if (eq system-type 'darwin) 170 140))
 
 (set-language-environment "Japanese")
 
