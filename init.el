@@ -15,6 +15,8 @@
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'cperl-indent-level 'tab-width)
 
+(electric-indent-mode t)
+(electric-pair-mode t)
 (show-paren-mode 1)
 
 (set-face-attribute 'default nil :family "Cica" :height (if (eq system-type 'darwin) 170 140))
@@ -49,8 +51,13 @@
 ;; Themes
 (use-package dracula-theme
 	:straight t
+	)
+
+(use-package kaolin-themes
+	:straight t
 	:init
-	(load-theme 'dracula t))
+	(load-theme 'kaolin-aurora t)
+	)
 
 (use-package all-the-icons
 	:straight t
@@ -156,6 +163,10 @@
 	 ("C-M-r" . counsel-recentf)
 	 ("C-x C-b" . counsel-ibuffer)
 	 ("C-M-f" . counsel-ag)))
+
+(use-package smex
+	:straight t
+	)
 
 (use-package ivy-hydra
 	:straight t
