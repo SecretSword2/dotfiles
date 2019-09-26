@@ -102,6 +102,11 @@
 	:config
 	(global-anzu-mode 1))
 
+(use-package beacon
+	:straight t
+	:config
+	(beacon-mode 1))
+
 (use-package company
 	:straight t
 	:init
@@ -115,7 +120,7 @@
 		(company-lsp-enable-recompletion t))
 	:config
 	(global-company-mode)
-	(company-tng-configure-default)
+	;; (company-tng-configure-default)
 	:custom
 	(company-idle-delay 0)
 	(company-minimum-prefix-length 3)
@@ -135,13 +140,12 @@
 		(enable-recursive-minibuffers t)
 		(ivy-use-selectable-prompt t)
 		:config
-		(ivy-mode 1)
-		:init
-		(use-package ivy-rich
-			:straight t
-			:requires ivy
-			:config
-			(ivy-rich-mode t)))
+		(ivy-mode 1))
+	(use-package ivy-rich
+		:straight t
+		:after ivy
+		:config
+		(ivy-rich-mode t))
 	:bind
 	(("M-s M-s" . swiper)
 	 ("M-x" . counsel-M-x)
@@ -151,6 +155,18 @@
 	 ("C-M-f" . counsel-ag))
 	:config
 	(counsel-mode 1))
+
+(use-package dashboard
+	:straight t
+	:custom
+	(dashboard-startup-banner 3)
+	:config
+	(dashboard-setup-startup-hook))
+
+(use-package git-gutter
+	:straight t
+	:config
+	(global-git-gutter-mode +1))
 
 (use-package google-c-style
 	:straight (google-c-style
@@ -163,6 +179,16 @@
 	(c-mode-common-hook . google-set-c-style)
 	(c++-mode-common-hook . google-set-c-style)
 	(c-mode-common-hook . google-make-newline-indent))
+
+(use-package highlight-indent-guides
+	:straight t
+	:delight
+	:hook
+	((emacs-lisp-mode) . highlight-indent-guides-mode)
+	:custom
+	(highlight-indent-guides-auto-enabled t)
+	(highlight-indent-guides-responsive t)
+	(highlight-indent-guides-method 'character))
 
 (use-package lsp-mode
 	:straight t
@@ -208,6 +234,11 @@
 	:config
 	(global-undo-tree-mode))
 
+(use-package volatile-highlights
+	:straight t
+	:hook
+	(after-init . volatile-highlights-mode))
+
 (use-package web-mode
 	:mode ("\\.html?\\'" "\\.php\\'")
 	:config
@@ -224,3 +255,4 @@
 	:straight t
 	:requires yasnippet
 	:after yasnippet)
+
