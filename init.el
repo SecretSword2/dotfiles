@@ -65,12 +65,18 @@
 ;; Look and feel
 
 (use-package all-the-icons
-	:straight t
-	:custom
-	(all-the-icons-scale-factor 0.83))
+	:straight t)
 
 (use-package delight
 	:straight t)
+
+(use-package doom-modeline
+	:straight t
+	:hook
+	(after-init . doom-modeline-mode)
+	:custom
+	(doom-modeline-icon nil)
+	(doom-modeline-height 1))
 
 (use-package dracula-theme
 	:straight t)
