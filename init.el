@@ -231,11 +231,13 @@
 
 (use-package undo-tree
 	:straight t
+	:delight
 	:config
 	(global-undo-tree-mode))
 
 (use-package volatile-highlights
 	:straight t
+	:delight
 	:hook
 	(after-init . volatile-highlights-mode))
 
@@ -244,6 +246,12 @@
 	:config
 	(setq web-mode-markup-indent-offset	2)
 	(web-mode-use-tabs))
+
+(use-package which-key
+	:straight t
+	:delight
+	:hook
+	(after-init . which-key-mode))
 
 (use-package yasnippet
 	:delight
