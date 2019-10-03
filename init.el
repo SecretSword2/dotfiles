@@ -27,8 +27,9 @@
 (show-paren-mode 1)
 
 (set-face-attribute 'default nil
-										:family "Cica"
-										:height (if (eq system-type 'darwin) 170 140))
+										:family "Cascadia Code"
+										:height (if (eq system-type 'darwin) 150 120))
+(set-fontset-font t 'unicode (font-spec :family "Noto Sans CJK JP DemiLight"))
 
 (set-language-environment "Japanese")
 
