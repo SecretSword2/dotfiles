@@ -5,8 +5,8 @@
 													 (garbage-collect)))
 
 (if (<= emacs-major-version 26)
-		(global-display-line-numbers-mode)
-	(global-linum-mode t))
+		(global-linum-mode t)
+	(global-display-line-numbers-mode))
 
 (setq ring-bell-function 'ignore)
 (setq inhibit-startup-screen t)
@@ -27,9 +27,9 @@
 (show-paren-mode 1)
 
 (set-face-attribute 'default nil
-										:family "Cascadia Code"
+										:family "Consolas"
 										:height (if (eq system-type 'darwin) 150 120))
-(set-fontset-font t 'unicode (font-spec :family "Noto Sans CJK JP DemiLight"))
+(set-fontset-font t 'unicode (font-spec :family "Yu Gothic"))
 
 (set-language-environment "Japanese")
 
@@ -70,14 +70,6 @@
 
 (use-package delight
 	:straight t)
-
-(use-package doom-modeline
-	:straight t
-	:hook
-	(after-init . doom-modeline-mode)
-	:custom
-	(doom-modeline-icon nil)
-	(doom-modeline-height 1))
 
 (use-package dracula-theme
 	:straight t)
@@ -170,10 +162,11 @@
 	:config
 	(dashboard-setup-startup-hook))
 
-(use-package git-gutter
+(use-package diff-hl
 	:straight t
 	:config
-	(global-git-gutter-mode +1))
+	(global-diff-hl-mode)
+	(diff-hl-margin-mode))
 
 (use-package google-c-style
 	:straight (google-c-style
