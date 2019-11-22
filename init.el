@@ -28,7 +28,7 @@
 
 (set-face-attribute 'default nil
 										:family "Consolas"
-										:height (if (eq system-type 'darwin) 150 120))
+										:height (if (eq system-type 'darwin) 150 130))
 (set-fontset-font t 'unicode (font-spec :family "Yu Gothic"))
 
 (set-language-environment "Japanese")
@@ -234,6 +234,14 @@
 	:delight
 	:config
 	(global-undo-tree-mode))
+
+(use-package verilog-mode
+	:straight (verilog-mode
+						 :type git
+						 :host github
+						 :repo "veripool/verilog-mode"
+						 :branch "master")
+	)
 
 (use-package volatile-highlights
 	:straight t
