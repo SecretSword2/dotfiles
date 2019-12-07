@@ -27,7 +27,7 @@
 (show-paren-mode 1)
 
 (set-face-attribute 'default nil
-										:family "Consolas"
+										:family "Roboto Mono"
 										:height (if (eq system-type 'darwin) 150 130))
 (set-fontset-font t 'unicode (font-spec :family "Yu Gothic"))
 
@@ -76,8 +76,15 @@
 
 (use-package kaolin-themes
 	:straight t
+	;; :init
+	;; (load-theme 'kaolin-aurora t)
+	)
+
+(use-package srcery-theme
+	:straight t
 	:init
-	(load-theme 'kaolin-aurora t))
+	(load-theme 'srcery t)
+	)
 
 ;; (use-package doom-modeline
 ;;   :straight t
