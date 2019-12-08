@@ -27,7 +27,8 @@
 (show-paren-mode 1)
 
 (set-face-attribute 'default nil
-										:family "Roboto Mono"
+										:family "IBM Plex Mono"
+										;; :family "Roboto Mono"
 										:height (if (eq system-type 'darwin) 150 130))
 (set-fontset-font t 'unicode (font-spec :family "Yu Gothic"))
 
@@ -76,15 +77,16 @@
 
 (use-package kaolin-themes
 	:straight t
-	;; :init
-	;; (load-theme 'kaolin-aurora t)
+	:init
+	(load-theme 'kaolin-valley-dark t)
 	)
 
-(use-package srcery-theme
-	:straight t
-	:init
-	(load-theme 'srcery t)
-	)
+;; (use-package srcery-theme
+;; 	:disabled
+;; 	:straight t
+;; 	:init
+;; 	(load-theme 'srcery t)
+;; 	)
 
 ;; (use-package doom-modeline
 ;;   :straight t
@@ -278,4 +280,3 @@
 	:straight t
 	:requires yasnippet
 	:after yasnippet)
-
