@@ -30,7 +30,7 @@
 										:family "IBM Plex Mono"
 										;; :family "Roboto Mono"
 										:height (if (eq system-type 'darwin) 150 130))
-(set-fontset-font t 'unicode (font-spec :family "Yu Gothic"))
+(set-fontset-font t 'unicode (font-spec :family "Cica"))
 
 (set-language-environment "Japanese")
 
@@ -138,7 +138,7 @@
 (use-package counsel
 	:straight t
 	:diminish
-	:init
+	:config
 	(use-package amx
 		:straight t)
 	(use-package ivy
@@ -154,6 +154,7 @@
 		:after ivy
 		:config
 		(ivy-rich-mode t))
+  (counsel-mode 1)
 	:bind
 	(("M-s M-s" . swiper)
 	 ("M-x" . counsel-M-x)
@@ -161,15 +162,7 @@
 	 ("C-M-r" . counsel-recentf)
 	 ("C-x C-b" . counsel-ibuffer)
 	 ("C-M-f" . counsel-ag))
-	:config
-	(counsel-mode 1))
-
-(use-package dashboard
-	:straight t
-	:custom
-	(dashboard-startup-banner 3)
-	:config
-	(dashboard-setup-startup-hook))
+	)
 
 (use-package diff-hl
 	:straight t
@@ -199,21 +192,8 @@
 	(highlight-indent-guides-responsive t)
 	(highlight-indent-guides-method 'character))
 
-(use-package lsp-mode
-	:straight t
-	:init
-	(use-package exec-path-from-shell
-		:straight t
-		:config (when (memq window-system '(mac ns x))
-							(exec-path-from-shell-initialize)))
-	(use-package lsp-ui
-		:straight t)
-	:hook
-	(before-save . lsp-format-buffer)
-	(c++-mode . lsp)
-	:custom
-	(lsp-auto-guess-root t))
-
+(use-package eglot
+  :straight t)
 
 (use-package projectile
 	:straight t
@@ -250,6 +230,20 @@
 						 :host github
 						 :repo "veripool/verilog-mode"
 						 :branch "master")
+	:custom
+	(indent-tabs-mode nil)
+	(verilog-indent-level 2)
+	(verilog-indent-level-module 2)
+	(verilog-indent-level-declaration 2)
+	(verilog-indent-level-behavioral  2)
+	(verilog-case-indent 2)
+	(verilog-auto-newline nil)
+	(verilog-auto-indent-on-newline t)
+	(verilog-tab-always-indent t)
+	(verilog-auto-endcomments t)
+	(verilog-minimum-comment-distance 20)
+	(verilog-indent-begin-after-if t)
+	(verilog-auto-lineup '(all))
 	)
 
 (use-package volatile-highlights
@@ -261,7 +255,7 @@
 (use-package web-mode
 	:mode ("\\.html?\\'" "\\.php\\'")
 	:config
-	(setq web-mode-markup-indent-offset	2)
+	(setq web-mode-markup-indent-offset 2)
 	(web-mode-use-tabs))
 
 (use-package which-key
