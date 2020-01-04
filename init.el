@@ -29,8 +29,9 @@
 (set-face-attribute 'default nil
 										:family "IBM Plex Mono"
 										;; :family "Roboto Mono"
-										:height (if (eq system-type 'darwin) 150 130))
-(set-fontset-font t 'unicode (font-spec :family "Cica"))
+										:height (if (eq system-type 'darwin) 140 120))
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Cica"))
+(set-fontset-font t 'unicode (font-spec :family "Segoe UI Emoji") nil 'prepend)
 
 (set-language-environment "Japanese")
 
@@ -117,15 +118,6 @@
 
 (use-package company
 	:straight t
-	:init
-	(use-package company-lsp
-		:straight t
-		:config
-		(push 'company-lsp company-backends)
-		:custom
-		(company-lsp-async t)
-		(company-lsp-enable-snippet t)
-		(company-lsp-enable-recompletion t))
 	:config
 	(global-company-mode)
 	;; (company-tng-configure-default)
@@ -135,40 +127,48 @@
 	(company-selection-wrap-around t)
 	(company-dabbrev-downcase nil))
 
-(use-package counsel
-	:straight t
-	:diminish
-	:config
-	(use-package amx
-		:straight t)
-	(use-package ivy
-		:straight t
-		:custom
-		(ivy-use-virtual-buffers t)
-		(enable-recursive-minibuffers t)
-		(ivy-use-selectable-prompt t)
-		:config
-		(ivy-mode 1))
-	(use-package ivy-rich
-		:straight t
-		:after ivy
-		:config
-		(ivy-rich-mode t))
-  (counsel-mode 1)
-	:bind
-	(("M-s M-s" . swiper)
-	 ("M-x" . counsel-M-x)
-	 ("M-y" . counsel-yank-pop)
-	 ("C-M-r" . counsel-recentf)
-	 ("C-x C-b" . counsel-ibuffer)
-	 ("C-M-f" . counsel-ag))
-	)
+;; (use-package counsel
+;; 	:straight t
+;; 	:diminish
+;; 	:config
+;; 	(use-package amx
+;; 		:straight t)
+;; 	(use-package ivy
+;; 		:straight t
+;; 		:custom
+;; 		(ivy-use-virtual-buffers t)
+;; 		(enable-recursive-minibuffers t)
+;; 		(ivy-use-selectable-prompt t)
+;; 		:config
+;; 		(ivy-mode 1))
+;; 	(use-package ivy-rich
+;; 		:straight t
+;; 		:after ivy
+;; 		:config
+;; 		(ivy-rich-mode t))
+;;   (counsel-mode 1)
+;; 	:bind
+;; 	(("M-s M-s" . swiper)
+;; 	 ("M-x" . counsel-M-x)
+;; 	 ("M-y" . counsel-yank-pop)
+;; 	 ("C-M-r" . counsel-recentf)
+;; 	 ("C-x C-b" . counsel-ibuffer)
+;; 	 ("C-M-f" . counsel-ag))
+;; 	)
 
 (use-package diff-hl
 	:straight t
 	:config
 	(global-diff-hl-mode)
 	(diff-hl-margin-mode))
+
+(use-package eglot
+  :straight t)
+
+(use-package golden-ratio
+  :straight t
+  :config
+  (golden-ratio-mode 1))
 
 (use-package google-c-style
 	:straight (google-c-style
@@ -182,6 +182,19 @@
 	(c++-mode-common-hook . google-set-c-style)
 	(c-mode-common-hook . google-make-newline-indent))
 
+(use-package helm
+  :straight t
+  :config
+  (helm-mode 1)
+  :custom
+  (helm-mode-fuzzy-match t)
+  (helm-completion-in-region-fuzzy-match t)
+  (helm-default-display-buffer-functions '(display-buffer-in-side-window))
+  :bind
+  ("M-x" . helm-M-x)
+  ("C-x C-f" . helm-find-files)
+  ("C-x C-r" . helm-recentf))
+
 (use-package highlight-indent-guides
 	:straight t
 	:delight
@@ -192,21 +205,16 @@
 	(highlight-indent-guides-responsive t)
 	(highlight-indent-guides-method 'character))
 
-(use-package eglot
+(use-package magit
   :straight t)
 
 (use-package projectile
 	:straight t
 	:config
-	(defun projectile-project-find-function (dir)
-		(let* ((root (projectile-project-root dir)))
-			(and root
-					 (cons 'transient root))))
-	(with-eval-after-load
-			'project
-		(add-to-list
-		 'project-find-functions
-		 'projectile-project-find-function)))
+  (projectile-mode +1)
+  :bind
+  ("s-p" . projectile-command-map)
+  ("C-c p" . projectile-command-map))
 
 (use-package rainbow-delimiters
 	:straight t
