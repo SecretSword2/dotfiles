@@ -10,6 +10,7 @@
 
 (setq ring-bell-function 'ignore)
 (setq inhibit-startup-screen t)
+(setq-default cursor-type 'bar)
 
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode t)
@@ -27,7 +28,7 @@
 (show-paren-mode 1)
 
 (set-face-attribute 'default nil
-                    :family "IBM Plex Mono"
+                    :family "JetBrains Mono"
                     ;; :family "Roboto Mono"
                     :height (if (eq system-type 'darwin) 140 120))
 (set-fontset-font t 'japanese-jisx0208 (font-spec :family "Cica"))
@@ -39,6 +40,8 @@
 (set-file-name-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
+
+(setq-default ispell-program-name "~/.emacs.d/aspell.cmd")
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -78,8 +81,15 @@
 
 (use-package kaolin-themes
   :straight t
+  ;; :init
+  ;; (load-theme 'kaolin-valley-dark t)
+  )
+
+(use-package spacemacs-theme
+  :defer t
+  :straight t
   :init
-  (load-theme 'kaolin-valley-dark t)
+  (load-theme 'spacemacs-light t)
   )
 
 ;; (use-package srcery-theme
@@ -102,8 +112,9 @@
 
 (use-package aggressive-indent
   :straight t
-  :hook
-  (c++-mode . aggressive-indent-mode))
+  ;; :hook
+  ;; (c++-mode . aggressive-indent-mode)
+  )
 
 (use-package anzu
   :straight t
@@ -127,35 +138,6 @@
   (company-selection-wrap-around t)
   (company-dabbrev-downcase nil))
 
-;; (use-package counsel
-;;  :straight t
-;;  :diminish
-;;  :config
-;;  (use-package amx
-;;    :straight t)
-;;  (use-package ivy
-;;    :straight t
-;;    :custom
-;;    (ivy-use-virtual-buffers t)
-;;    (enable-recursive-minibuffers t)
-;;    (ivy-use-selectable-prompt t)
-;;    :config
-;;    (ivy-mode 1))
-;;  (use-package ivy-rich
-;;    :straight t
-;;    :after ivy
-;;    :config
-;;    (ivy-rich-mode t))
-;;   (counsel-mode 1)
-;;  :bind
-;;  (("M-s M-s" . swiper)
-;;   ("M-x" . counsel-M-x)
-;;   ("M-y" . counsel-yank-pop)
-;;   ("C-M-r" . counsel-recentf)
-;;   ("C-x C-b" . counsel-ibuffer)
-;;   ("C-M-f" . counsel-ag))
-;;  )
-
 (use-package diff-hl
   :straight t
   :config
@@ -164,8 +146,16 @@
 
 (use-package eglot
   :straight t
-  :hook
-  (before-save . eglot-format-buffer)
+  :config
+  (add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("clangd" "--clang-tidy")))
+  ;; :hook
+  ;; (before-save . eglot-format-buffer)
+  :custom
+  (eglot-autoreconnect t)
+  )
+
+(use-package flycheck
+  :straight t
   )
 
 (use-package golden-ratio
@@ -173,17 +163,17 @@
   :config
   (golden-ratio-mode 1))
 
-(use-package google-c-style
-  :straight (google-c-style
-             :type git
-             :host github
-             :repo "google/styleguide"
-             :branch "gh-pages")
-  :hook
-  (c++-mode . google-set-c-style)
-  (c-mode-common-hook . google-set-c-style)
-  (c++-mode-common-hook . google-set-c-style)
-  (c-mode-common-hook . google-make-newline-indent))
+;; (use-package google-c-style
+;;   :straight (google-c-style
+;;              :type git
+;;              :host github
+;;              :repo "google/styleguide"
+;;              :branch "gh-pages")
+;;   :hook
+;;   (c++-mode . google-set-c-style)
+;;   (c-mode-common-hook . google-set-c-style)
+;;   (c++-mode-common-hook . google-set-c-style)
+;;   (c-mode-common-hook . google-make-newline-indent))
 
 (use-package helm
   :straight t
