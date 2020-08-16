@@ -4,9 +4,11 @@
 (run-with-idle-timer 2 t (lambda ()
                            (garbage-collect)))
 
-(if (<= emacs-major-version 26)
-    (global-linum-mode t)
-  (global-display-line-numbers-mode))
+;; display line numbers
+(if (version<= "26.0.50" emacs-version)
+    (progn
+      (global-display-line-numbers-mode)
+      ))
 
 (setq ring-bell-function 'ignore)
 (setq inhibit-startup-screen t)
@@ -29,9 +31,9 @@
 
 (set-face-attribute 'default nil
                     :family "JetBrains Mono"
-                    ;; :family "Roboto Mono"
                     :height (if (eq system-type 'darwin) 140 120))
-(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Cica"))
+(set-fontset-font t 'japanese-jisx0208 (font-spec :family "MotoyaLMaru"))
+;; 日本語のサンプルです
 (set-fontset-font t 'unicode (font-spec :family "Segoe UI Emoji") nil 'prepend)
 
 (set-language-environment "Japanese")
@@ -70,41 +72,25 @@
 
 ;; Look and feel
 
-(use-package all-the-icons
-  :straight t)
-
 (use-package delight
-  :straight t)
-
-(use-package dracula-theme
   :straight t)
 
 (use-package kaolin-themes
   :straight t
-  ;; :init
-  ;; (load-theme 'kaolin-valley-dark t)
+  :init
+  (load-theme 'kaolin-valley-dark t)
   )
 
 (use-package spacemacs-theme
-  :defer t
   :straight t
-  :init
-  (load-theme 'spacemacs-light t)
   )
 
-;; (use-package srcery-theme
-;;  :disabled
-;;  :straight t
-;;  :init
-;;  (load-theme 'srcery t)
-;;  )
-
-;; (use-package doom-modeline
-;;   :straight t
-;;  :init
-;;  (doom-modeline-mode 1))
+(use-package srcery-theme
+  :straight t
+ )
 
 ;; And everything else
+
 (use-package ace-window
   :straight t
   :bind
@@ -112,8 +98,6 @@
 
 (use-package aggressive-indent
   :straight t
-  ;; :hook
-  ;; (c++-mode . aggressive-indent-mode)
   )
 
 (use-package anzu
@@ -138,21 +122,24 @@
   (company-selection-wrap-around t)
   (company-dabbrev-downcase nil))
 
+(use-package counsel
+  :straight t
+  :delight
+  :config
+  (ivy-mode 1)
+  :custom
+  (ivy-use-virtual-buffers t)
+  :bind
+  ("M-x" . counsel-M-x)
+  ("C-x C-r" . counsel-recentf)
+  ("C-x C-f" . counsel-find-file)
+  )
+
 (use-package diff-hl
   :straight t
   :config
   (global-diff-hl-mode)
   (diff-hl-margin-mode))
-
-(use-package eglot
-  :straight t
-  :config
-  (add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("clangd" "--clang-tidy")))
-  ;; :hook
-  ;; (before-save . eglot-format-buffer)
-  :custom
-  (eglot-autoreconnect t)
-  )
 
 (use-package flycheck
   :straight t
@@ -162,31 +149,6 @@
   :straight t
   :config
   (golden-ratio-mode 1))
-
-;; (use-package google-c-style
-;;   :straight (google-c-style
-;;              :type git
-;;              :host github
-;;              :repo "google/styleguide"
-;;              :branch "gh-pages")
-;;   :hook
-;;   (c++-mode . google-set-c-style)
-;;   (c-mode-common-hook . google-set-c-style)
-;;   (c++-mode-common-hook . google-set-c-style)
-;;   (c-mode-common-hook . google-make-newline-indent))
-
-(use-package helm
-  :straight t
-  :config
-  (helm-mode 1)
-  :custom
-  (helm-mode-fuzzy-match t)
-  (helm-completion-in-region-fuzzy-match t)
-  (helm-default-display-buffer-functions '(display-buffer-in-side-window))
-  :bind
-  ("M-x" . helm-M-x)
-  ("C-x C-f" . helm-find-files)
-  ("C-x C-r" . helm-recentf))
 
 (use-package highlight-indent-guides
   :straight t
@@ -198,18 +160,39 @@
   (highlight-indent-guides-responsive t)
   (highlight-indent-guides-method 'character))
 
-(use-package magit
-  :straight t)
+(use-package lsp-mode
+  :straight t
+  :custom
+  ;; enable log only for debug
+  (lsp-log-io nil)
+  ;; turn off for better performance
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-auto-configure t)
+
+  (lsp-inhibit-message t)
+  (lsp-message-project-root-warning t)
+  (create-lockfiles nil)
+  :hook
+  (prog-major-mode . lsp-prog-major-mode-enable)
+  )
+
+(use-package lsp-treemacs
+  :straight t
+  :requires (lsp-mode tree-sitter-langs)
+  :init
+  (lsp-treemacs-sync-mode 1)
+  )
+
+(use-package lsp-ui
+  :straight t
+  :after lsp-mode
+  :custom (scroll-margin 0)
+  :hook   (lsp-mode . lsp-ui-mode))
 
 (use-package projectile
   :straight t
   :config
   (projectile-mode +1)
-  :config
-  (use-package helm-projectile
-    :straight t
-    :requires helm
-    )
   :bind
   ("s-p" . projectile-command-map)
   ("C-c p" . projectile-command-map))
@@ -223,6 +206,23 @@
                       :foreground 'unspecified
                       :inherit 'error
                       :strike-through t))
+
+(use-package tree-sitter
+  :straight (tree-sitter
+             :host github
+             :repo "ubolonton/emacs-tree-sitter"
+             :files ("lisp/*.el")))
+
+(use-package tree-sitter-langs
+  :straight (tree-sitter-langs
+             :host github
+             :repo "ubolonton/emacs-tree-sitter"
+             :files ("langs/*.el" "langs/queries"))
+  :requires tree-sitter
+  :hook
+  (javascript-mode . tree-sitter-mode)
+  (javascript-mode . tree-sitter-hl-mode)
+  )
 
 (use-package undo-tree
   :straight t
@@ -259,6 +259,7 @@
   (after-init . volatile-highlights-mode))
 
 (use-package web-mode
+  :straight t
   :mode ("\\.html?\\'" "\\.php\\'")
   :config
   (setq web-mode-markup-indent-offset 2)
